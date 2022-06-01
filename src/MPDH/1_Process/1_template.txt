@@ -1,0 +1,41 @@
+from os import listdir
+import numpy as np
+import pandas as pd
+import json
+from tqdm import tqdm
+from tqdm.contrib import tzip
+
+hanzi_table = "/home/songshuai/data/intro-to-AI/Project/pinyin/data/一二级汉字表.txt"
+pinyin_table = "/home/songshuai/data/intro-to-AI/Project/pinyin/data/拼音汉字表.txt"
+
+hanzi_map = {}
+duyin_map = {}
+
+with open(hanzi_table, 'r', encoding='utf-8') as f_read1:
+    data1 = f_read1.read()
+    for i in range(len(data1)):
+        hanzi_map[i] = data1[i]
+    
+with open(pinyin_table, "r", encoding="utf-8") as f_read2:
+    lines = f_read2.readlines()
+    for i in range(len(lines)):
+        line = lines[i].split()
+        duyin_map[i] = line[0]
+
+# 手写多进程，先生成txt文件，之后直接运行即可
+process = 0
+print(f"Process::{X_NUM_X} Running")
+with open("/home/songshuai/data/intro-to-AI/Project/pinyin/data/sentences_normal.txt", "r", encoding='utf-8') as f1:
+    with open("/home/songshuai/data/intro-to-AI/Project/pinyin/data/pinyin_normal.txt", "r", encoding='utf-8') as f2:
+        word_lines = f1.readlines()[100000*X_NUM_X:100000*(X_NUM_X+1)]
+        all_lines = f2.readlines()
+        lines = all_lines[X_NUM_X*Y__SIZE__Y: max((X_NUM_X+1)*Y__SIZE__Y, len(all_lines))]
+        emit_matrix = pd.DataFrame(np.zeros((406, 6763)))
+        for word_line, pinyin_line in tzip(word_lines, pinyin_lines):
+            pinyin_line = pinyin_line.split() 
+            for word in word_line.strip('\n'):
+                try:
+                    emit_matrix.iloc[list(duyin_map.values()).index(pinyin_line[word_line.index(word)]), list(hanzi_map.values()).index(word)] += 1
+                except:
+                    print(word, pinyin_line[word_line.index(word)])
+        emit_matrix.to_csv(f"/home/songshuai/data/intro-to-AI/Project/pinyin/MPDH/11_data/Process_{X_NUM_X}.csv", index=0)
